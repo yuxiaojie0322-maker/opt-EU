@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-从 VLESS 链接生成 Xray 配置文件
+从 VLESS 链接生成 Xray 配置文件 (已修复 REALITY 规范与监听配置)
 """
 
 import urllib.parse
@@ -74,6 +74,7 @@ def generate_xray_config(vless_url):
         },
         "inbounds": [
             {
+                "listen": "127.0.0.1",
                 "port": 10808,
                 "protocol": "socks",
                 "settings": {
@@ -135,13 +136,14 @@ def generate_xray_config(vless_url):
             "allowInsecure": False
         }
     elif node["security"] == "reality":
-        config["outbounds"][0]["streamSettings"]["realitySettings"] = {
+        reality_settings = {
             "serverName": node["sni"],
             "fingerprint": node["fingerprint"],
-            "publicKey": node.get("pbk", ""),
-            "shortId": node.get("sid", ""),
-            "allowInsecure": False
+            "publicKey": node.get("pbk", "")
         }
+        if node.get("sid"):
+            reality_settings["shortId"] = node.get("sid")
+        config["outbounds"][0]["streamSettings"]["realitySettings"] = reality_settings
     
     return config
 
