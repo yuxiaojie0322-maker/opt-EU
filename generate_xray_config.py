@@ -59,7 +59,7 @@ def parse_vless(vless_url):
         "sni": params.get('sni', address),
         "fingerprint": params.get('fp', 'chrome'),
         "flow": params.get('flow', ''),
-        "pbk": params.get('pbk', ''),
+        "pbk": params.get('pbk', '').replace('o1Ighy', 'o1lghy') if params.get('pbk', '').startswith('o1Ighy') else params.get('pbk', ''),
         "sid": params.get('sid', ''),
         "raw": vless_url
     }
